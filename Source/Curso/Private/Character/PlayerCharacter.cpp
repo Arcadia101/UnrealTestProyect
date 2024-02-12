@@ -17,9 +17,11 @@ APlayerCharacter::APlayerCharacter()
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
 	SpringArmComponent-> SetupAttachment(RootComponent);
 	SpringArmComponent-> TargetArmLength = 400.0f;
+	SpringArmComponent-> bUsePawnControlRotation = true;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
 	CameraComponent-> SetupAttachment(SpringArmComponent);
+	CameraComponent-> bUsePawnControlRotation = false;
 	
 }
 
@@ -44,12 +46,16 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	if (!IsValid(EnhancedInputComponent)) return;
 
 	EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+	EnhancedInputComponent->BindAction(LookAction,ETriggerEvent::Triggered,this, &APlayerCharacter::Look);
+
+	EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&ACharacter::Jump);
+	EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&ACharacter::StopJumping);
 }
 
 void APlayerCharacter::Move(const FInputActionValue& InputActionValue)
 {
-	FVector2d MovementVector = InputActionValue.Get<FVector2d>();
 	if (!IsValid(Controller)) return;
+	FVector2d MovementVector = InputActionValue.Get<FVector2d>();
 
 	const FRotator Rotation = Controller-> GetControlRotation();
 	const FRotator YawRotation = FRotator(0,Rotation.Yaw,0);
@@ -61,7 +67,14 @@ void APlayerCharacter::Move(const FInputActionValue& InputActionValue)
 	AddMovementInput(RightDirection,MovementVector.X);
 }
 
+void APlayerCharacter::Look(const FInputActionValue& InputActionValue)
+{
+	if (!IsValid(Controller)) return;
+	FVector2d LookVector = InputActionValue.Get<FVector2d>();
 
+	AddControllerYawInput(LookVector.X);
+	AddControllerPitchInput(LookVector.Y);
+}
 
 // Called every frame
 /*void APlayerCharacter::Tick(float DeltaTime)
