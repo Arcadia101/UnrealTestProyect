@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Actors/ProjectileActor.h"
 
 
 // Sets default values
@@ -22,7 +23,9 @@ APlayerCharacter::APlayerCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
 	CameraComponent-> SetupAttachment(SpringArmComponent);
 	CameraComponent-> bUsePawnControlRotation = false;
-	
+
+	FireSceneComponent = CreateDefaultSubobject<USceneComponent>("FireSceneComponent");
+	FireSceneComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -50,6 +53,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this,&ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&ACharacter::StopJumping);
+
+	EnhancedInputComponent->BindAction(FireAction,ETriggerEvent::Started,this,&APlayerCharacter::Fire);
 }
 
 void APlayerCharacter::Move(const FInputActionValue& InputActionValue)
@@ -74,6 +79,17 @@ void APlayerCharacter::Look(const FInputActionValue& InputActionValue)
 
 	AddControllerYawInput(LookVector.X);
 	AddControllerPitchInput(LookVector.Y);
+}
+
+void APlayerCharacter::Fire(const FInputActionValue& Value)
+{
+	FVector SpawnPos = FireSceneComponent->GetComponentLocation();
+	FRotator SpawnRot = FireSceneComponent->GetComponentRotation();
+
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.Owner = this;
+
+	GetWorld()->SpawnActor<AProjectileActor>(ProjectileActorClass,SpawnPos,SpawnRot,SpawnInfo);
 }
 
 // Called every frame

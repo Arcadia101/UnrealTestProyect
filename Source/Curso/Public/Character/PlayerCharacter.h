@@ -7,11 +7,12 @@
 #include "PlayerCharacter.generated.h"
 
 
+struct FInputActionValue;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
-struct FInputActionValue;
+class AProjectileActor;
 
 UCLASS()
 class CURSO_API APlayerCharacter : public ACharacter
@@ -25,23 +26,37 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category=Components)
 	USpringArmComponent* SpringArmComponent;
+	
 	UPROPERTY(EditDefaultsOnly, Category=Components)
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category=Components)
+	USceneComponent* FireSceneComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category=Input)
 	UInputMappingContext* DefaultMappingContext;
 
 	UPROPERTY(EditDefaultsOnly, Category=Input)
 	UInputAction* MoveAction;
+	
 	UPROPERTY(EditDefaultsOnly, Category=Input)
 	UInputAction* LookAction;
+	
 	UPROPERTY(EditDefaultsOnly, Category=Input)
 	UInputAction* JumpAction;
+
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	UInputAction* FireAction;
+
+	UPROPERTY(EditDefaultsOnly, Category=ProjectileConfig)
+	TSubclassOf<AProjectileActor> ProjectileActorClass;
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void Fire(const FInputActionValue& Value);
 
 public:
 	// Called every frame
