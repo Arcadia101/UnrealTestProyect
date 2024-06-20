@@ -88,6 +88,7 @@ void APlayerCharacter::Fire(const FInputActionValue& Value)
 
 	FActorSpawnParameters SpawnInfo;
 	SpawnInfo.Owner = this;
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
 	GetWorld()->SpawnActor<AProjectileActor>(ProjectileActorClass,SpawnPos,SpawnRot,SpawnInfo);
 }

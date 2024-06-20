@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class CURSO_API AProjectileActor : public AActor
@@ -20,21 +21,17 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly,Category=Components)
+	UPROPERTY(VisibleDefaultsOnly, Category=Components)
+	USphereComponent* CollisionComponent;
+
+	UPROPERTY(VisibleDefaultsOnly, Category=Components)
 	UStaticMeshComponent* ProjectileMeshComponent;
-
-	UPROPERTY(EditDefaultsOnly,Category=Components)
-	USphereComponent* ProjectileCollisionComponent;
-
-	UPROPERTY(EditDefaultsOnly,Category=Components)
+	
+	UPROPERTY(VisibleDefaultsOnly, Category=Components)
 	UProjectileMovementComponent* ProjectileMovementComponent;
-	// Called when the game starts or when spawned
+
 	virtual void BeginPlay() override;
 
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-	void OnProjectHit(UPrimitiveComponent* HitComponent,AActor* OtherActor,UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-public:
-	// Called every frame
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 };
