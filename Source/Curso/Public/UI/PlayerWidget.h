@@ -19,6 +19,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
 	UTextBlock* PlayerHealthText;
 
-public:
+	virtual void NativeOnInitialized() override;
+
+	UFUNCTION()
+	void HandleUpdateHealth();
+
+	UFUNCTION()
 	void UpdateHealthText(int32 CurrentHealth);
+public:
 };

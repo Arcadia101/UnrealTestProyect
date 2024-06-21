@@ -2,6 +2,8 @@
 
 
 #include "UI/GameHUD.h"
+#include "Components/HealthComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/PlayerWidget.h"
 
 void AGameHUD::BeginPlay()
@@ -12,6 +14,4 @@ void AGameHUD::BeginPlay()
 
 	UPlayerWidget* PlayerWidget = CreateWidget<UPlayerWidget>(GetWorld(), PlayerWidgetClass);
 	PlayerWidget-> AddToViewport();
-
-	PlayerWidget-> UpdateHealthText(100);
 }

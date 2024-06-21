@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Actors/ProjectileActor.h"
+#include "Components/HealthComponent.h"
 
 
 // Sets default values
@@ -26,6 +27,9 @@ APlayerCharacter::APlayerCharacter()
 
 	FireSceneComponent = CreateDefaultSubobject<USceneComponent>("FireSceneComponent");
 	FireSceneComponent->SetupAttachment(RootComponent);
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
+	
 }
 
 // Called when the game starts or when spawned

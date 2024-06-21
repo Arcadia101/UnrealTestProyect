@@ -13,6 +13,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class AProjectileActor;
+class UHealthComponent;
 
 UCLASS()
 class CURSO_API APlayerCharacter : public ACharacter
@@ -32,6 +33,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category=Components)
 	USceneComponent* FireSceneComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category=Components)
+	UHealthComponent* HealthComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category=Input)
 	UInputMappingContext* DefaultMappingContext;
