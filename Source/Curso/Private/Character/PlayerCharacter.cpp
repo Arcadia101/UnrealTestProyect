@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Actors/ProjectileActor.h"
+#include "Components/GunComponent.h"
 #include "Components/HealthComponent.h"
 
 
@@ -21,12 +22,19 @@ APlayerCharacter::APlayerCharacter()
 	SpringArmComponent-> TargetArmLength = 400.0f;
 	SpringArmComponent-> bUsePawnControlRotation = true;
 
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
-	CameraComponent-> SetupAttachment(SpringArmComponent);
-	CameraComponent-> bUsePawnControlRotation = false;
+	ThirdCameraComponent = CreateDefaultSubobject<UCameraComponent>("Third Camera");
+	ThirdCameraComponent-> SetupAttachment(SpringArmComponent);
+	ThirdCameraComponent-> bUsePawnControlRotation = false;
 
+	FirstCameraComponent = CreateDefaultSubobject<UCameraComponent>("First Camera");
+	FirstCameraComponent-> SetupAttachment(GetMesh(), "Eyes_Position");
+	FirstCameraComponent-> bUsePawnControlRotation = true;
+
+	GunComponent = CreateDefaultSubobject<UGunComponent>("GunComponent");
+	GunComponent->SetupAttachment(RootComponent);
+	
 	FireSceneComponent = CreateDefaultSubobject<USceneComponent>("FireSceneComponent");
-	FireSceneComponent->SetupAttachment(RootComponent);
+	FireSceneComponent->SetupAttachment(GunComponent);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
 	
@@ -59,6 +67,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this,&ACharacter::StopJumping);
 
 	EnhancedInputComponent->BindAction(FireAction,ETriggerEvent::Started,this,&APlayerCharacter::Fire);
+	
+	EnhancedInputComponent->BindAction(ChangeCameraAction, ETriggerEvent::Started, this,&APlayerCharacter::ChangeFirstCamera);
+	EnhancedInputComponent->BindAction(ChangeCameraAction, ETriggerEvent::Completed, this,&APlayerCharacter::ChangeThirdCamera);
 }
 
 void APlayerCharacter::Move(const FInputActionValue& InputActionValue)
@@ -87,18 +98,30 @@ void APlayerCharacter::Look(const FInputActionValue& InputActionValue)
 
 void APlayerCharacter::Fire(const FInputActionValue& Value)
 {
-	FVector SpawnPos = FireSceneComponent->GetComponentLocation();
+	/*FVector SpawnPos = FireSceneComponent->GetComponentLocation();
 	FRotator SpawnRot = FireSceneComponent->GetComponentRotation();
 
 	FActorSpawnParameters SpawnInfo;
 	SpawnInfo.Owner = this;
 	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-	GetWorld()->SpawnActor<AProjectileActor>(ProjectileActorClass,SpawnPos,SpawnRot,SpawnInfo);
+	GetWorld()->SpawnActor<AProjectileActor>(ProjectileActorClass,SpawnPos,SpawnRot,SpawnInfo);*/
+
+	GunComponent->Fire(FireSceneComponent);
 }
 
-// Called every frame
-/*void APlayerCharacter::Tick(float DeltaTime)
+void APlayerCharacter::ChangeFirstCamera()
 {
-	Super::Tick(DeltaTime);
-}*/
+	ThirdCameraComponent->SetActive(false);
+	FirstCameraComponent->SetActive(true);
+
+	bUseControllerRotationYaw = true;
+}
+
+void APlayerCharacter::ChangeThirdCamera()
+{
+	FirstCameraComponent->SetActive(false);
+	ThirdCameraComponent->SetActive(true);
+
+	bUseControllerRotationYaw = false;
+}

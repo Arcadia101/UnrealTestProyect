@@ -14,6 +14,7 @@ class UInputMappingContext;
 class UInputAction;
 class AProjectileActor;
 class UHealthComponent;
+class UGunComponent;
 
 UCLASS()
 class CURSO_API APlayerCharacter : public ACharacter
@@ -29,13 +30,19 @@ protected:
 	USpringArmComponent* SpringArmComponent;
 	
 	UPROPERTY(EditDefaultsOnly, Category=Components)
-	UCameraComponent* CameraComponent;
+	UCameraComponent* ThirdCameraComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category=Components)
+	UCameraComponent* FirstCameraComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category=Components)
 	USceneComponent* FireSceneComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category=Components)
 	UHealthComponent* HealthComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category=Components)
+	UGunComponent* GunComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category=Input)
 	UInputMappingContext* DefaultMappingContext;
@@ -52,6 +59,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=Input)
 	UInputAction* FireAction;
 
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	UInputAction* ChangeCameraAction;
+
 	UPROPERTY(EditDefaultsOnly, Category=ProjectileConfig)
 	TSubclassOf<AProjectileActor> ProjectileActorClass;
 	
@@ -61,6 +71,9 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Fire(const FInputActionValue& Value);
+
+	void ChangeFirstCamera();
+	void ChangeThirdCamera();
 
 public:
 	// Called every frame
