@@ -7,6 +7,7 @@
 #include "CharacterAnimInstance.generated.h"
 
 class UCharacterMovementComponent;
+class APlayerCharacter;
 UCLASS()
 class CURSO_API UCharacterAnimInstance : public UAnimInstance
 {
@@ -15,6 +16,9 @@ class CURSO_API UCharacterAnimInstance : public UAnimInstance
 protected:
 	UPROPERTY()
 	UCharacterMovementComponent* CharacterMovementComponent;
+
+	UPROPERTY()
+	APlayerCharacter* PlayerCharacter;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bShouldBeMove = false;
@@ -27,6 +31,9 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly)
 	float ZVelocity;
+
+	UPROPERTY(BlueprintReadOnly)
+	float XRotator;
 
 	virtual void NativeBeginPlay() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;

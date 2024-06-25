@@ -2,6 +2,8 @@
 
 
 #include "Character/CharacterAnimInstance.h"
+#include "Camera/CameraComponent.h"
+#include "Character/PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 void UCharacterAnimInstance::NativeBeginPlay()
@@ -11,13 +13,15 @@ void UCharacterAnimInstance::NativeBeginPlay()
 	APawn* Pawn = TryGetPawnOwner();
 	if (!IsValid(Pawn)) return;
 	CharacterMovementComponent = Pawn->GetComponentByClass<UCharacterMovementComponent>();
+
+	PlayerCharacter = Cast<APlayerCharacter>(Pawn);
 }
 
 void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	if (!IsValid(CharacterMovementComponent)) return;
+	if (!IsValid(CharacterMovementComponent) || !IsValid(PlayerCharacter)) return;
 
 	const FVector CharacterVelocity = CharacterMovementComponent->Velocity;
 	Velocity = CharacterVelocity.Size2D();
@@ -25,4 +29,6 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	ZVelocity = CharacterVelocity.Z;
 	bIsFalling = CharacterMovementComponent->IsFalling();
+
+	XRotator = -PlayerCharacter->GetThirdCameraComponent()->GetComponentRotation().Pitch;
 }
