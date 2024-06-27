@@ -6,9 +6,9 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "Actors/ProjectileActor.h"
 #include "Components/GunComponent.h"
 #include "Components/HealthComponent.h"
+#include "Interfaces/Interactable.h"
 
 
 // Sets default values
@@ -70,6 +70,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	
 	EnhancedInputComponent->BindAction(ChangeCameraAction, ETriggerEvent::Started, this,&APlayerCharacter::ChangeFirstCamera);
 	EnhancedInputComponent->BindAction(ChangeCameraAction, ETriggerEvent::Completed, this,&APlayerCharacter::ChangeThirdCamera);
+
+	EnhancedInputComponent->BindAction(InteractionAction,ETriggerEvent::Started,this,&APlayerCharacter::Interact);
 }
 
 void APlayerCharacter::Move(const FInputActionValue& InputActionValue)
@@ -96,7 +98,7 @@ void APlayerCharacter::Look(const FInputActionValue& InputActionValue)
 	AddControllerPitchInput(LookVector.Y);
 }
 
-void APlayerCharacter::Fire(const FInputActionValue& Value)
+void APlayerCharacter::Fire()
 {
 	/*FVector SpawnPos = FireSceneComponent->GetComponentLocation();
 	FRotator SpawnRot = FireSceneComponent->GetComponentRotation();
@@ -108,6 +110,34 @@ void APlayerCharacter::Fire(const FInputActionValue& Value)
 	GetWorld()->SpawnActor<AProjectileActor>(ProjectileActorClass,SpawnPos,SpawnRot,SpawnInfo);*/
 
 	GunComponent->Fire(FireSceneComponent);
+}
+
+void APlayerCharacter::Interact()
+{
+	FVector StartLocation;
+	FRotator Rotation;
+
+	GetActorEyesViewPoint(StartLocation, Rotation);
+
+	FVector EndLocation = StartLocation + (Rotation.Vector()* InteractDistance);
+
+	FHitResult HitResult;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	DrawDebugLine(GetWorld(),StartLocation,EndLocation,FColor::Magenta,false,5.0f);
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult,StartLocation,EndLocation,ECC_Visibility,Params);
+
+	if (bHit)
+	{
+		AActor* HitActor = HitResult.GetActor();
+		if (!IsValid(HitActor)) return;
+		if (HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+		{
+			IInteractable::Execute_Interact(HitActor, this);
+		}
+	}
 }
 
 void APlayerCharacter::ChangeFirstCamera()

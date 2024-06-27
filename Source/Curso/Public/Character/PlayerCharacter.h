@@ -62,6 +62,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=Input)
 	UInputAction* ChangeCameraAction;
 
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	UInputAction* InteractionAction;
+
+	UPROPERTY(EditDefaultsOnly, Category=Settings)
+	float InteractDistance = 200.0f;
+
 	UPROPERTY(EditDefaultsOnly, Category=ProjectileConfig)
 	TSubclassOf<AProjectileActor> ProjectileActorClass;
 	
@@ -70,7 +76,8 @@ protected:
 
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
-	void Fire(const FInputActionValue& Value);
+	void Fire();
+	void Interact();
 
 	void ChangeFirstCamera();
 	void ChangeThirdCamera();
