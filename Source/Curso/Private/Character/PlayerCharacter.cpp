@@ -72,6 +72,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(ChangeCameraAction, ETriggerEvent::Completed, this,&APlayerCharacter::ChangeThirdCamera);
 
 	EnhancedInputComponent->BindAction(InteractionAction,ETriggerEvent::Started,this,&APlayerCharacter::Interact);
+	EnhancedInputComponent->BindAction(PauseAction,ETriggerEvent::Started,this,&APlayerCharacter::Pause);
 }
 
 void APlayerCharacter::Move(const FInputActionValue& InputActionValue)
@@ -109,7 +110,7 @@ void APlayerCharacter::Fire()
 
 	GetWorld()->SpawnActor<AProjectileActor>(ProjectileActorClass,SpawnPos,SpawnRot,SpawnInfo);*/
 
-	GunComponent->Fire(FireSceneComponent);
+	GunComponent->Fire(FireSceneComponent->GetComponentLocation(),FireSceneComponent->GetForwardVector());
 }
 
 void APlayerCharacter::Interact()
@@ -138,6 +139,21 @@ void APlayerCharacter::Interact()
 			IInteractable::Execute_Interact(HitActor, this);
 		}
 	}
+}
+
+void APlayerCharacter::Pause()
+{
+	if(!IsValid(PauseMenuWidgetClass)) return;
+
+	UPauseMenuWidget* PauseMenuWidget = CreateWidget<UPauseMenuWidget>(GetWorld(), PauseMenuWidgetClass);
+	PauseMenuWidget-> AddToViewport();
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (!IsValid(PlayerController)) return;
+
+	PlayerController->SetShowMouseCursor(true);
+	PlayerController->SetInputMode(FInputModeGameAndUI());
+	PlayerController->SetPause(true);
 }
 
 void APlayerCharacter::ChangeFirstCamera()

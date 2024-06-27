@@ -3,18 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WeaponBaseComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GunComponent.generated.h"
 
 UCLASS()
-class CURSO_API UGunComponent : public UStaticMeshComponent
+class CURSO_API UGunComponent : public UWeaponBaseComponent
 {
 	GENERATED_BODY()
 
 public:
 	UGunComponent();
 
-	void Fire(USceneComponent* FirePosComponent);
+	virtual void Fire(FVector Position, FVector Forward) override;
+	virtual void Reload() override;
 
 protected:
 

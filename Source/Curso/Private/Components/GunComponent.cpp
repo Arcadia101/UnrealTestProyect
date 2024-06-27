@@ -10,11 +10,11 @@ UGunComponent::UGunComponent()
 	SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void UGunComponent::Fire(USceneComponent* FirePosComponent)
+void UGunComponent::Fire(FVector Position, FVector Forward)
 {
 	FHitResult OutHit;
-	FVector StartPos = FirePosComponent->GetComponentLocation();
-	FVector EndPos = StartPos + (FirePosComponent->GetForwardVector()*Distance);
+	FVector StartPos = Position;
+	FVector EndPos = StartPos + (Forward*Distance);
 	FCollisionQueryParams CollisionQueryParams;
 
 	DrawDebugLine(GetWorld(),StartPos,EndPos,FColor::Green);
@@ -29,4 +29,9 @@ void UGunComponent::Fire(USceneComponent* FirePosComponent)
 				*OutHit.ImpactNormal.ToString()));
 		}
 	}
+}
+
+void UGunComponent::Reload()
+{
+	Super::Reload();
 }
