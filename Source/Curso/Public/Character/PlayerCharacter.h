@@ -90,6 +90,8 @@ protected:
 	void ChangeFirstCamera();
 	void ChangeThirdCamera();
 
+	UFUNCTION()
+	void HandleOnScoreUpdated(const int32 CurrentPoints);
 public:
 	// Called every frame
 	//virtual void Tick(float DeltaTime) override;

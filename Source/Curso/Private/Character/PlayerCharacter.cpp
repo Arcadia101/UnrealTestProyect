@@ -9,6 +9,7 @@
 #include "Components/GunComponent.h"
 #include "Components/HealthComponent.h"
 #include "Interfaces/Interactable.h"
+#include "SubSystems/ScoreSubsystem.h"
 
 
 // Sets default values
@@ -51,6 +52,11 @@ void APlayerCharacter::BeginPlay()
 	if (!IsValid(Subsystem)) return;
 	
 	Subsystem-> AddMappingContext(DefaultMappingContext,0);
+
+	UScoreSubsystem* ScoreSubsystem = GetGameInstance()->GetSubsystem<UScoreSubsystem>();
+	if(!IsValid(ScoreSubsystem)) return;
+
+	ScoreSubsystem->OnScoreUpdated.AddUniqueDynamic(this, &APlayerCharacter::HandleOnScoreUpdated);
 }
 
 // Called to bind functionality to input
@@ -170,4 +176,9 @@ void APlayerCharacter::ChangeThirdCamera()
 	ThirdCameraComponent->SetActive(true);
 
 	bUseControllerRotationYaw = false;
+}
+
+void APlayerCharacter::HandleOnScoreUpdated(const int32 CurrentPoints)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Silver, FString::Printf(TEXT("%i"), CurrentPoints));
 }

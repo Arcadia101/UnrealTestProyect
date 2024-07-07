@@ -3,6 +3,8 @@
 
 #include "Components/GunComponent.h"
 
+#include "Components/HealthComponent.h"
+
 UGunComponent::UGunComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -27,6 +29,11 @@ void UGunComponent::Fire(FVector Position, FVector Forward)
 				*OutHit.GetActor()->GetName(),
 				*OutHit.ImpactPoint.ToString(),
 				*OutHit.ImpactNormal.ToString()));
+
+			UHealthComponent* HealthComponent =  OutHit.GetActor()->FindComponentByClass<UHealthComponent>();
+			if(!IsValid(HealthComponent)) return;
+
+			HealthComponent->UpdateCurrentHealth(-100);
 		}
 	}
 }
