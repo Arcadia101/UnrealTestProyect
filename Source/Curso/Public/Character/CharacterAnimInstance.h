@@ -8,6 +8,8 @@
 
 class UCharacterMovementComponent;
 class APlayerCharacter;
+class UCameraComponent;
+
 UCLASS()
 class CURSO_API UCharacterAnimInstance : public UAnimInstance
 {
@@ -18,7 +20,10 @@ protected:
 	UCharacterMovementComponent* CharacterMovementComponent;
 
 	UPROPERTY()
-	APlayerCharacter* PlayerCharacter;
+	ACharacter* PlayerCharacter;
+
+	UPROPERTY()
+	UCameraComponent* CameraComponent;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bShouldBeMove = false;

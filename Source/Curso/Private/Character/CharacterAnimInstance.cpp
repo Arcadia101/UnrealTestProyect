@@ -14,7 +14,10 @@ void UCharacterAnimInstance::NativeBeginPlay()
 	if (!IsValid(Pawn)) return;
 	CharacterMovementComponent = Pawn->GetComponentByClass<UCharacterMovementComponent>();
 
-	PlayerCharacter = Cast<APlayerCharacter>(Pawn);
+	PlayerCharacter = Cast<ACharacter>(Pawn);
+	CameraComponent = PlayerCharacter->FindComponentByClass<UCameraComponent>();
+
+	
 }
 
 void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -30,5 +33,6 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	ZVelocity = CharacterVelocity.Z;
 	bIsFalling = CharacterMovementComponent->IsFalling();
 
-	XRotator = -PlayerCharacter->GetThirdCameraComponent()->GetComponentRotation().Pitch;
+	if (!IsValid(CameraComponent)) return;
+	XRotator = -CameraComponent->GetComponentRotation().Pitch;
 }
