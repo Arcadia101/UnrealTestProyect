@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GenericTeamAgentInterface.h"
 #include "GameFramework/Character.h"
 #include "UI/PauseMenuWidget.h"
 #include "PlayerCharacter.generated.h"
@@ -18,7 +19,7 @@ class UHealthComponent;
 class UGunComponent;
 
 UCLASS()
-class CURSO_API APlayerCharacter : public ACharacter
+class CURSO_API APlayerCharacter : public ACharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -77,7 +78,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category=Settings)
 	TSubclassOf<UPauseMenuWidget> PauseMenuWidgetClass;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category=Teams)
+	int32 TeamId = 100;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -89,6 +92,8 @@ protected:
 
 	void ChangeFirstCamera();
 	void ChangeThirdCamera();
+
+	virtual FGenericTeamId GetGenericTeamId() const override;
 
 	UFUNCTION()
 	void HandleOnScoreUpdated(const int32 CurrentPoints);

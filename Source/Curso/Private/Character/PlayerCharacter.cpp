@@ -178,6 +178,11 @@ void APlayerCharacter::ChangeThirdCamera()
 	bUseControllerRotationYaw = false;
 }
 
+FGenericTeamId APlayerCharacter::GetGenericTeamId() const
+{
+	return TeamId;
+}
+
 void APlayerCharacter::HandleOnScoreUpdated(const int32 CurrentPoints)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Silver, FString::Printf(TEXT("%i"), CurrentPoints));
